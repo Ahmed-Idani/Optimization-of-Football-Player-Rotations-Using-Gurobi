@@ -15,7 +15,6 @@ def show_teams():
         {"id": team.id, "team_name": team.team_name, "logo_path": team.logo_url}
         for team in teams
     ]
-    print("Teams JSON response:", json_teams)  # Debugging
     return jsonify({"teams": json_teams}), 200
 
 
@@ -79,10 +78,26 @@ def optimise(team_name):
     result = bestThree(number_of_games, difficulty_list, physicality_list, goals_list,players_names_list,oponents_list )
     return result, 200
 
-if __name__ == '__main__':
+def init_database(force=False):
+    """Create tables and seed them.
+
+    Called at import, not only under __main__, because gunicorn imports this
+    module rather than executing it. Without this the deployed API would come
+    up against an empty database.
+
+    populate_database is a no-op when clubs already exist, so this is safe to
+    run on every boot and every worker.
+    """
     with app.app_context():
         db.create_all()
-        # Only seeds when the database is empty, so restarting the API no
-        # longer wipes and rebuilds every table. Pass --reseed to force it.
-        populate_database(force="--reseed" in sys.argv)
+        populate_database(force=force)
+
+
+# Render's filesystem is ephemeral, so the SQLite file is rebuilt from the
+# seed files on each deploy. That is intentional: the CSV is the source of
+# truth, not the database.
+init_database(force="--reseed" in sys.argv)
+
+
+if __name__ == '__main__':
     app.run(debug=True)

@@ -2,6 +2,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./TeamPage.css";
 import { Player } from "../../components/player/Player.jsx";
+import { apiUrl } from "../../lib/api.js";
 
 export const TeamPage = () => {
   const { team_name } = useParams();
@@ -18,7 +19,7 @@ export const TeamPage = () => {
       setStatus("loading");
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/teams/${encodeURIComponent(team_name)}/players/`,
+          apiUrl(`api/teams/${encodeURIComponent(team_name)}/players/`),
         );
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -75,7 +76,7 @@ export const TeamPage = () => {
 
       {status === "error" && (
         <p className="team-page__message">
-          Couldn’t load this squad. Check that the API is running on port 5000.
+          Couldn’t load this squad. Check the API is reachable.
         </p>
       )}
 

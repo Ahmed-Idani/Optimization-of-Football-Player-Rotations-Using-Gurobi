@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import "../../styles/street.css";
+import { apiUrl } from "../../lib/api.js";
 
 const MAX_MATCHES = 38;
 
@@ -116,7 +117,7 @@ export const MatchSetup = () => {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/api/optimise/${encodeURIComponent(team_name)}/`,
+        apiUrl(`api/optimise/${encodeURIComponent(team_name)}/`),
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -139,7 +140,7 @@ export const MatchSetup = () => {
       // connection.
       const message =
         error instanceof TypeError
-          ? "Can't reach the solver. Is the API running on port 5000?"
+          ? "Can't reach the solver. Check the API is running."
           : /no optimal solution/i.test(error.message)
             ? "No valid rotation exists. This squad needs at least 3 players with goals/game and physicality filled in."
             : error.message;

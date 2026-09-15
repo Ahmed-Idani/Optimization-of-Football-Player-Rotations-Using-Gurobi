@@ -1,0 +1,46 @@
+# Render blueprint: one Python web service for the solver API, one static site
+# for the interface. Both deploy from main on push.
+#
+# Apply with:  render blueprint launch
+
+services:
+  - type: web
+    name: rotation-api
+    runtime: python
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    # One worker on purpose. The free instance is small, and a single worker
+    # avoids two processes racing to seed the database on first boot.
+    startCommand: gunicorn main:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /api/teams/
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.3"
+
+  - type: web
+    name: rotation-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    autoDeploy: true
+    envVars:
+      # Vite inlines this at build time, so the API must exist before the
+      # first frontend build for the link to resolve.
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: rotation-api
+          property: hostport
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      # Single-page app: unknown paths are routes, not missing files.
+      - type: rewrite
+        source: /*
+        destination: /index.html

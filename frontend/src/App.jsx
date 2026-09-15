@@ -1,6 +1,7 @@
 import { useState , useEffect } from 'react'
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { apiUrl } from "./lib/api.js";
 import { MatchSetup } from "./pages/MatchSetup/MatchSetup";
 import {ChooseTeam} from "./pages/ChooseTeam/ChooseTeam.jsx";
 import {TeamPage} from "./pages/TeamPage/TeamPage.jsx";
@@ -12,7 +13,7 @@ function App() {
         fetchTeams()
     },[])
     const fetchTeams = async ()=>{
-        const response = await fetch("http://127.0.0.1:5000/api/teams/")
+        const response = await fetch(apiUrl("api/teams/"))
         const data = await response.json()
         setTeams(data.teams)
     }
