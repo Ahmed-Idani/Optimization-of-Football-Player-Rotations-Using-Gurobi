@@ -1,0 +1,14 @@
+team_name,player_name,age,nationality,potential_goals_per_game,physicality,image_path
+Liverpool,Mohamed Salah,32,Egypt,0.7,3,/images/players/Liverpool/mohamed_salah.png
+Liverpool,Darwin Núñez,25,Uruguay,0.6,2,/images/players/Liverpool/darwin_nunez.png
+Liverpool,Diogo Jota,27,Portugal,0.5,2,/images/players/Liverpool/diogo_jota.png
+Liverpool,Luis Díaz,27,Colombia,0.4,1,/images/players/Liverpool/luis_diaz.png
+Man City,Phil Foden,24,England,0.4,2,/images/players/ManchesterCity/phil_foden.png
+Man City,Jack Grealish,29,England,0.35,2,/images/players/ManchesterCity/jack_grealish.png
+Man City,Julian Álvarez,24,Argentina,0.3,2,/images/players/ManchesterCity/julian_alvarez.png
+Man City,Bernardo Silva,30,Portugal,0.25,1,/images/players/ManchesterCity/bernardo_silva.png
+Man United,Rasmus Højlund,21,Denmark,0.6,3,/images/players/ManchesterUnited/rasmus_hojlund.png
+Man United,Antony,24,Brazil,0.35,2,/images/players/ManchesterUnited/antony.png
+Man United,Alejandro Garnacho,20,Argentina,0.3,2,/images/players/ManchesterUnited/alejandro_garnacho.png
+Man United,Bruno Fernandes,29,Portugal,0.4,2,/images/players/ManchesterUnited/bruno_fernandes.png
+Man United,Mason Mount,25,England,0.35,2,/images/players/ManchesterUnited/mason_mount.png

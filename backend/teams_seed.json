@@ -1,0 +1,92 @@
+[
+  {
+    "id": 57,
+    "team_name": "Arsenal",
+    "full_name": "Arsenal FC",
+    "tla": "ARS",
+    "crest_source": "https://crests.football-data.org/57.png",
+    "crest": "/images/teams/nobg/arsenal.png",
+    "position_2025_26": 1
+  },
+  {
+    "id": 65,
+    "team_name": "Man City",
+    "full_name": "Manchester City FC",
+    "tla": "MCI",
+    "crest_source": "https://crests.football-data.org/65.png",
+    "crest": "/images/teams/nobg/mancity.png",
+    "position_2025_26": 2
+  },
+  {
+    "id": 66,
+    "team_name": "Man United",
+    "full_name": "Manchester United FC",
+    "tla": "MUN",
+    "crest_source": "https://crests.football-data.org/66.png",
+    "crest": "/images/teams/nobg/manunited.png",
+    "position_2025_26": 3
+  },
+  {
+    "id": 58,
+    "team_name": "Aston Villa",
+    "full_name": "Aston Villa FC",
+    "tla": "AVL",
+    "crest_source": "https://crests.football-data.org/58.png",
+    "crest": "/images/teams/nobg/astonvilla.png",
+    "position_2025_26": 4
+  },
+  {
+    "id": 64,
+    "team_name": "Liverpool",
+    "full_name": "Liverpool FC",
+    "tla": "LIV",
+    "crest_source": "https://crests.football-data.org/64.png",
+    "crest": "/images/teams/nobg/liverpool.png",
+    "position_2025_26": 5
+  },
+  {
+    "id": 1044,
+    "team_name": "Bournemouth",
+    "full_name": "AFC Bournemouth",
+    "tla": "BOU",
+    "crest_source": "https://crests.football-data.org/bournemouth.png",
+    "crest": "/images/teams/nobg/bournemouth.png",
+    "position_2025_26": 6
+  },
+  {
+    "id": 71,
+    "team_name": "Sunderland",
+    "full_name": "Sunderland AFC",
+    "tla": "SUN",
+    "crest_source": "https://crests.football-data.org/71.png",
+    "crest": "/images/teams/nobg/sunderland.png",
+    "position_2025_26": 7
+  },
+  {
+    "id": 397,
+    "team_name": "Brighton Hove",
+    "full_name": "Brighton & Hove Albion FC",
+    "tla": "BHA",
+    "crest_source": "https://crests.football-data.org/397.png",
+    "crest": "/images/teams/nobg/brightonhove.png",
+    "position_2025_26": 8
+  },
+  {
+    "id": 402,
+    "team_name": "Brentford",
+    "full_name": "Brentford FC",
+    "tla": "BRE",
+    "crest_source": "https://crests.football-data.org/402.png",
+    "crest": "/images/teams/nobg/brentford.png",
+    "position_2025_26": 9
+  },
+  {
+    "id": 61,
+    "team_name": "Chelsea",
+    "full_name": "Chelsea FC",
+    "tla": "CHE",
+    "crest_source": "https://crests.football-data.org/61.png",
+    "crest": "/images/teams/nobg/chelsea.png",
+    "position_2025_26": 10
+  }
+]
