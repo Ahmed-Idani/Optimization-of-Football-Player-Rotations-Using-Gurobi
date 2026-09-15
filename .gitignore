@@ -1,16 +1,22 @@
 # Python-related ignores
 __pycache__/
 *.py[cod]
+*.egg-info/
 instance/
+*.sqlite
+*.sqlite3
+*.db
 
 # Node.js-related ignores
-frontend/node_modules/
+node_modules/
 frontend/dist/
 *.log
+npm-debug.log*
 
 # Virtual environments
 venv/
 env/
+.venv/
 *.venv/
 
 # OS-specific files
