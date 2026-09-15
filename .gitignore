@@ -20,3 +20,9 @@ Thumbs.db
 # IDEs
 .idea/
 .vscode/
+
+# Local env (stale leftovers from the Next.js version, no secrets)
+.env
+
+# Source audio lives in frontend/public/audio/, not the repo root
+/jonasblakewood-*.mp3

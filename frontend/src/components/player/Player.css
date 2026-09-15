@@ -1,72 +1,233 @@
-.player-card {
+/* FIFA Ultimate Team style player card.
+   Tier palettes are driven by --c1..--c4 (spray ramp) plus --ink for text. */
+
+.fut-card {
+  --c1: #9df3ff;
+  --c2: #00e5ff;
+  --c3: #0090a8;
+  --c4: #c9f8ff;
+  --ink: #04262c;
+
+  width: 220px;
+  aspect-ratio: 220 / 312;
   position: relative;
-  width: 200px;
-  height: 300px;
-  overflow: hidden;
-  border-radius: 10px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
+  flex: 0 0 auto;
+  border: 0;
+  padding: 0;
+  color: var(--ink);
+  font-family: var(--font-data), "Trebuchet MS", sans-serif;
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
 
-.player-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+.fut-card--magenta {
+  --c1: #ffa3c9;
+  --c2: #ff2e88;
+  --c3: #b3004f;
+  --c4: #ffc9de;
+  --ink: #2d0016;
 }
 
-.player-info {
-  position: relative;
-  width: 100%;
-  height: 80%;
-  overflow: hidden;
-  border-radius: 10px;
+.fut-card--cyan {
+  --c1: #9df3ff;
+  --c2: #00e5ff;
+  --c3: #0090a8;
+  --c4: #c9f8ff;
+  --ink: #04262c;
 }
 
-.player-info img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: filter 0.3s ease;
+.fut-card--acid {
+  --c1: #e4ffb0;
+  --c2: #b8ff2e;
+  --c3: #6fa800;
+  --c4: #f0ffd6;
+  --ink: #16210a;
 }
 
-.player-info:hover img {
-  filter: blur(4px);
-}
-
-.player-hover-info {
+/* The angled-shoulder silhouette FUT cards use. */
+.fut-card__inner {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  overflow: hidden;
+  clip-path: polygon(
+    0 6%,
+    14% 0,
+    86% 0,
+    100% 6%,
+    100% 88%,
+    50% 100%,
+    0 88%
+  );
+  background:
+    /* spray grain rather than a metallic sheen */
+    radial-gradient(rgba(0, 0, 0, 0.16) 1px, transparent 1px),
+    linear-gradient(
+      163deg,
+      var(--c1) 0%,
+      var(--c2) 42%,
+      var(--c3) 78%,
+      var(--c4) 100%
+    );
+  background-size: 3px 3px, auto;
+}
+
+.fut-card:hover,
+.fut-card:focus-within {
+  transform: translateY(-6px) scale(1.03);
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.55));
+}
+
+/* ---------- top half: rating column + portrait ---------- */
+
+.fut-card__head {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  padding: 12% 10px 0 14px;
+}
+
+.fut-card__id {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  color: #fff;
-  font-size: 1rem;
-  background: rgba(0, 0, 0, 0.6);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  gap: 2px;
+  width: 56px;
+  z-index: 2;
+  line-height: 1;
 }
 
-.player-info:hover .player-hover-info {
-  opacity: 1;
+.fut-card__ovr {
+  font-family: var(--font-display), sans-serif;
+  font-size: 2.1rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
-.player-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #333;
-  margin-top: 10px;
-  text-transform: capitalize;
-  transition: color 0.3s ease, transform 0.3s ease;
+.fut-card__pos {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
-.player-card:hover .player-name {
-  color: #007bff;
-  transform: scale(1.1);
+.fut-card__rule {
+  width: 26px;
+  height: 1px;
+  margin: 5px 0;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.fut-card__flag {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.fut-card__badge {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  margin-top: 3px;
+}
+
+/* Portrait is anchored bottom-right and allowed to bleed off the edge,
+   the way a FUT cut-out does. */
+.fut-card__portrait {
+  position: absolute;
+  right: -6px;
+  bottom: 0;
+  width: 74%;
+  height: 92%;
+  object-fit: contain;
+  object-position: bottom right;
+  z-index: 1;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+}
+
+/* ---------- bottom half: name band + stats ---------- */
+
+.fut-card__body {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  padding: 0 14px 9%;
+  text-align: center;
+}
+
+.fut-card__name {
+  margin: 0 0 4px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 4px;
+}
+
+.fut-card__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px 6px;
+  margin: 0;
+}
+
+.fut-card__stat {
+  display: flex;
+  flex-direction: column-reverse; /* value above label */
+  align-items: center;
+  line-height: 1.1;
+}
+
+.fut-card__stat dt {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.72;
+}
+
+.fut-card__stat dd {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.fut-card__note {
+  margin: 5px 0 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
+}
+
+.fut-card__note strong {
+  font-weight: 800;
+}
+
+@media (max-width: 480px) {
+  .fut-card {
+    width: 168px;
+  }
+
+  .fut-card__ovr {
+    font-size: 1.6rem;
+  }
+
+  .fut-card__name {
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fut-card {
+    transition: none;
+  }
+
+  .fut-card:hover,
+  .fut-card:focus-within {
+    transform: none;
+  }
 }

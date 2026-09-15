@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MatchSetup } from "./pages/MatchSetup/MatchSetup";
 import {ChooseTeam} from "./pages/ChooseTeam/ChooseTeam.jsx";
 import {TeamPage} from "./pages/TeamPage/TeamPage.jsx";
+import { Results } from "./pages/Results/Results.jsx";
+import { BoomBox } from "./components/boombox/BoomBox.jsx";
 function App() {
     const [teams,setTeams]=useState([])
     useEffect(()=>{
@@ -20,7 +22,9 @@ function App() {
             <Route path="/" element={<ChooseTeam teams={teams}/>} />
             <Route path="/teams/:team_name" element={<TeamPage/>}></Route>
             <Route path="/setup/:team_name" element={<MatchSetup />} />
+            <Route path="/results/:team_name" element={<Results />} />
           </Routes>
+          <BoomBox />
         </BrowserRouter>
     )
 }

@@ -1,3 +1,5 @@
+import sys
+
 from flask import request, jsonify
 from models import Team, Player ,populate_database
 from config import app, db
@@ -80,5 +82,7 @@ def optimise(team_name):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        populate_database()
+        # Only seeds when the database is empty, so restarting the API no
+        # longer wipes and rebuilds every table. Pass --reseed to force it.
+        populate_database(force="--reseed" in sys.argv)
     app.run(debug=True)
