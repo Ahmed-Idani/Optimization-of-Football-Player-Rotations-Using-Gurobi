@@ -1,5 +1,26 @@
+import csv
+import json
+from pathlib import Path
+
 from config import db
 from sqlalchemy import text
+
+# football-data.org reports short names ("Man City") that differ from the
+# names the hand-written squads below were written against. Map the old names
+# onto the API's so a club doesn't get seeded twice.
+TEAM_ALIASES = {
+    "ManchesterCity": "Man City",
+    "ManchesterUnited": "Man United",
+}
+
+
+def canonical_team(name):
+    return TEAM_ALIASES.get(name, name)
+
+
+HERE = Path(__file__).parent
+TEAMS_SEED = HERE / "teams_seed.json"
+PLAYERS_SCAFFOLD = HERE / "players_scaffold.csv"
 
 
 class Team(db.Model):
@@ -44,33 +65,6 @@ class Player(db.Model):
         }
 
 
-players_data = [
-    # Liverpool
-    {"player_name": "Mohamed Salah", "age": 32, "nationality": "Egypt", "potential_goals_per_game": 0.7, "physicality": 3, "image_path": "/images/players/Liverpool/mohamed_salah.png", "team_name": "Liverpool"},
-    {"player_name": "Darwin Núñez", "age": 25, "nationality": "Uruguay", "potential_goals_per_game": 0.6, "physicality": 2, "image_path": "/images/players/Liverpool/darwin_nunez.png", "team_name": "Liverpool"},
-    {"player_name": "Diogo Jota", "age": 27, "nationality": "Portugal", "potential_goals_per_game": 0.5, "physicality": 2, "image_path": "/images/players/Liverpool/diogo_jota.png", "team_name": "Liverpool"},
-    {"player_name": "Luis Díaz", "age": 27, "nationality": "Colombia", "potential_goals_per_game": 0.4, "physicality": 1, "image_path": "/images/players/Liverpool/luis_diaz.png", "team_name": "Liverpool"},
-    {"player_name": "Cody Gakpo", "age": 25, "nationality": "Netherlands", "potential_goals_per_game": 0.3, "physicality": 1, "image_path": "/images/players/Liverpool/cody_gakpo.png", "team_name": "Liverpool"},
-    {"player_name": "Federico Chiesa", "age": 27, "nationality": "Italy", "potential_goals_per_game": 0.4, "physicality": 2, "image_path": "/images/players/Liverpool/federico_chiesa.png", "team_name": "Liverpool"},
-
-    # Manchester City
-    {"player_name": "Erling Haaland", "age": 24, "nationality": "Norway", "potential_goals_per_game": 1.2, "physicality": 3, "image_path": "/images/players/ManchesterCity/erling_haaland.png", "team_name": "ManchesterCity"},
-    {"player_name": "Phil Foden", "age": 24, "nationality": "England", "potential_goals_per_game": 0.4, "physicality": 2, "image_path": "/images/players/ManchesterCity/phil_foden.png", "team_name": "ManchesterCity"},
-    {"player_name": "Jack Grealish", "age": 29, "nationality": "England", "potential_goals_per_game": 0.35, "physicality": 2, "image_path": "/images/players/ManchesterCity/jack_grealish.png", "team_name": "ManchesterCity"},
-    {"player_name": "Julian Álvarez", "age": 24, "nationality": "Argentina", "potential_goals_per_game": 0.3, "physicality": 2, "image_path": "/images/players/ManchesterCity/julian_alvarez.png", "team_name": "ManchesterCity"},
-    {"player_name": "Bernardo Silva", "age": 30, "nationality": "Portugal", "potential_goals_per_game": 0.25, "physicality": 1, "image_path": "/images/players/ManchesterCity/bernardo_silva.png", "team_name": "ManchesterCity"},
-    {"player_name": "Jeremy Doku", "age": 22, "nationality": "Belgium", "potential_goals_per_game": 0.2, "physicality": 3, "image_path": "/images/players/ManchesterCity/jeremy_doku.png", "team_name": "ManchesterCity"},
-
-    # Manchester United
-{"player_name": "Marcus Rashford", "age": 28, "nationality": "England", "potential_goals_per_game": 0.75, "physicality": 3, "image_path": "/images/players/ManchesterUnited/marcus_rashford.png", "team_name": "ManchesterUnited"},
-    {"player_name": "Rasmus Højlund", "age": 21, "nationality": "Denmark", "potential_goals_per_game": 0.6, "physicality": 3, "image_path": "/images/players/ManchesterUnited/rasmus_hojlund.png", "team_name": "ManchesterUnited"},
-    {"player_name": "Antony", "age": 24, "nationality": "Brazil", "potential_goals_per_game": 0.35, "physicality": 2, "image_path": "/images/players/ManchesterUnited/antony.png", "team_name": "ManchesterUnited"},
-    {"player_name": "Alejandro Garnacho", "age": 20, "nationality": "Argentina", "potential_goals_per_game": 0.3, "physicality": 2, "image_path": "/images/players/ManchesterUnited/alejandro_garnacho.png", "team_name": "ManchesterUnited"},
-    {"player_name": "Bruno Fernandes", "age": 29, "nationality": "Portugal", "potential_goals_per_game": 0.4, "physicality": 2, "image_path": "/images/players/ManchesterUnited/bruno_fernandes.png", "team_name": "ManchesterUnited"},
-    {"player_name": "Mason Mount", "age": 25, "nationality": "England", "potential_goals_per_game": 0.35, "physicality": 2, "image_path": "/images/players/ManchesterUnited/mason_mount.png", "team_name": "ManchesterUnited"}
-]
-
-
 def clear_database():
     db.session.query(Player).delete()
     db.session.query(Team).delete()
@@ -88,22 +82,109 @@ def clear_database():
     print("Database cleared and primary keys reset successfully!")
 
 
-def populate_database():
+def load_seeded_teams():
+    """Clubs fetched from football-data.org by fetch_pl_data.py.
+
+    Crest URLs point at football-data.org's CDN — the artwork is referenced,
+    never copied into this repo. Returns {} when the fetch has not been run,
+    in which case only the hand-written clubs below are seeded.
+    """
+    if not TEAMS_SEED.exists():
+        return {}
+
+    with TEAMS_SEED.open(encoding="utf-8") as handle:
+        return {
+            record["team_name"]: record.get("crest", "")
+            for record in json.load(handle)
+        }
+
+
+def load_scaffold_players():
+    """Players from players_scaffold.csv.
+
+    This is the single source of player data. Rows are skipped unless BOTH
+    model inputs have been filled in by hand, so a club with no completed rows
+    shows an empty squad rather than being seeded with invented numbers.
+    """
+    if not PLAYERS_SCAFFOLD.exists():
+        return [], 0
+
+    players, skipped = [], 0
+    with PLAYERS_SCAFFOLD.open(encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            goals = (row.get("potential_goals_per_game") or "").strip()
+            physicality = (row.get("physicality") or "").strip()
+            if not goals or not physicality:
+                skipped += 1
+                continue
+
+            try:
+                players.append({
+                    "player_name": row["player_name"].strip(),
+                    "age": int(row["age"]),
+                    "nationality": row["nationality"].strip(),
+                    "potential_goals_per_game": float(goals),
+                    "physicality": int(physicality),
+                    "image_path": (row.get("image_path") or "").strip() or None,
+                    "team_name": canonical_team(row["team_name"].strip()),
+                })
+            except (ValueError, KeyError):
+                skipped += 1
+
+    return players, skipped
+
+
+def populate_database(force=False):
+    """Seed the database.
+
+    By default this is a no-op when clubs already exist, so restarting the API
+    keeps whatever is in the database. Pass force=True (or run main.py with
+    --reseed) to wipe and rebuild after changing the seed files.
+    """
+    existing = db.session.query(Team).count()
+    if existing and not force:
+        players = db.session.query(Player).count()
+        print(f"Database already seeded: {existing} clubs, {players} players. "
+              f"Run with --reseed to rebuild.")
+        return
+
     clear_database()
-    teams = {team_name: Team(team_name=team_name, logo_url=f"/images/teams/nobg/{team_name.replace(' ', '').lower()}.png") for team_name in set(player['team_name'] for player in players_data)}
+
+    seeded_crests = load_seeded_teams()
+    scaffold_players, skipped = load_scaffold_players()
+
+    all_players = scaffold_players
+
+    # A club exists on its own merits now, so the grid can show every Premier
+    # League side even before anyone has supplied its squad.
+    team_names = set(seeded_crests) | {p["team_name"] for p in all_players}
+
+    teams = {}
+    for team_name in sorted(team_names):
+        crest = seeded_crests.get(team_name)
+        teams[team_name] = Team(
+            team_name=team_name,
+            logo_url=crest or f"/images/teams/nobg/{team_name.replace(' ', '').lower()}.png",
+        )
+
     db.session.add_all(teams.values())
     db.session.commit()
 
-    for player_data in players_data:
-        team = teams[player_data['team_name']]
-        player = Player(
-            player_name=player_data['player_name'],
-            age=player_data['age'],
-            nationality=player_data['nationality'],
-            potential_goals_per_game=player_data['potential_goals_per_game'],
-            physicality=player_data['physicality'],  # New field
-            image_path=player_data['image_path'],
-            team_id=team.id
-        )
-        db.session.add(player)
+    for player_data in all_players:
+        team = teams[player_data["team_name"]]
+        db.session.add(Player(
+            player_name=player_data["player_name"],
+            age=player_data["age"],
+            nationality=player_data["nationality"],
+            potential_goals_per_game=player_data["potential_goals_per_game"],
+            physicality=player_data["physicality"],
+            image_path=player_data["image_path"],
+            team_id=team.id,
+        ))
     db.session.commit()
+
+    with_squads = len({p["team_name"] for p in all_players})
+    print(f"Seeded {len(teams)} clubs ({with_squads} with squads), "
+          f"{len(all_players)} players.")
+    if skipped:
+        print(f"  {skipped} scaffold rows skipped — goals/game or physicality blank.")
