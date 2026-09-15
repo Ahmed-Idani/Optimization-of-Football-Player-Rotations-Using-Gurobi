@@ -7,10 +7,6 @@
   justify-content: center;
   align-items: center;
 }
-@font-face {
-  font-family: 'Blacklisted';
-  src: url('../../assets/fonts/Blacklisted.otf') format('opentype');
-}
 .title {
   font-family: 'Blacklisted', sans-serif;
   font-size: 4rem;
