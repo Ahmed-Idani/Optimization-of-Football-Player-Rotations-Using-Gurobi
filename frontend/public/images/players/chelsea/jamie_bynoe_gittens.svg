@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 300" width="220" height="300">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#034694"/><stop offset="1" stop-color="#02295a"/>
+    </linearGradient>
+    <pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="1" fill="#000" opacity="0.10"/>
+    </pattern>
+  </defs>
+  <path d="M110 34 c34 0 56 22 56 52 0 30-22 56-56 56 s-56-26-56-56 c0-30 22-52 56-52 z" fill="url(#g)"/>
+  <path d="M110 34 c34 0 56 22 56 52 0 30-22 56-56 56 s-56-26-56-56 c0-30 22-52 56-52 z" fill="url(#dots)"/>
+  <text x="110" y="107" text-anchor="middle" font-family="Impact, Haettenschweiler, sans-serif"
+        font-size="58" fill="#fff" opacity="0.95">JB</text>
+  <path d="M110 150 c40 0 70 26 78 62 l6 88 H26 l6-88 c8-36 38-62 78-62 z" fill="url(#g)"/>
+  <path d="M110 150 c40 0 70 26 78 62 l6 88 H26 l6-88 c8-36 38-62 78-62 z" fill="url(#dots)"/>
+  <text x="110" y="248" text-anchor="middle" font-family="Impact, Haettenschweiler, sans-serif"
+        font-size="26" fill="#fff" opacity="0.55" letter-spacing="2">JB</text>
+</svg>
