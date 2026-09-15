@@ -1,39 +1,137 @@
-.team-page-container {
-  text-align: center;
-  padding: 20px;
-  background-color: #f8f9fa;
-  height: 100vh;
+/* Sits on the global stadium background from index.css — no opaque light
+   panel, so the white body text stays readable. */
+
+.team-page {
+  min-height: 100vh;
+  padding: 28px clamp(16px, 4vw, 48px) 64px;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 13, 15, 0.8) 0%,
+    rgba(13, 13, 15, 0.88) 100%
+  );
 }
 
-.team-page-title {
-  font-size: 3rem;
-  margin-bottom: 30px;
-  color: #333;
-  font-family: "Arial", sans-serif;
-  text-transform: capitalize;
+.team-page__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
 }
 
-.players-container {
+.team-page__back {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.team-page__back:hover,
+.team-page__back:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.team-page__identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-right: auto;
+}
+
+.team-page__badge {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.team-page__title {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: #fff;
+}
+
+.team-page__cta {
+  padding: 12px 22px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #0d0d0f;
+  background: var(--color-spray-acid, #b8ff2e);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.team-page__cta:hover:not(:disabled),
+.team-page__cta:focus-visible:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(184, 255, 46, 0.4);
+}
+
+.team-page__cta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.team-page__squad {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 26px;
 }
 
-.setup-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: white;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.team-page__message {
+  text-align: center;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.82);
 }
 
-.setup-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
+/* Placeholder shown while the squad loads. */
+.card-skeleton {
+  width: 220px;
+  aspect-ratio: 220 / 312;
+  border-radius: 12px;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.06) 70%
+  );
+  background-size: 220% 100%;
+  animation: card-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes card-shimmer {
+  from {
+    background-position: 130% 0;
+  }
+  to {
+    background-position: -30% 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-skeleton {
+    width: 168px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-skeleton {
+    animation: none;
+  }
+
+  .team-page__cta:hover:not(:disabled) {
+    transform: none;
+  }
 }

@@ -1,0 +1,458 @@
+/* ==========================================================================
+   Street — visual language for the rotation planner.
+
+   Reference points: paste-up posters on a hoarding, spray stencils, marker
+   tags. Panels are torn paper taped to concrete, never glass. The stadium
+   photograph from index.css stays visible behind everything, so surfaces are
+   translucent concrete rather than opaque fills.
+
+   No metallics. Accents are spray-can colours only.
+   ========================================================================== */
+
+.st {
+  --tear: 10px;
+  --edge: rgba(244, 241, 234, 0.14);
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+  font-family: var(--font-data);
+  color: var(--color-paper);
+}
+
+/* Darkened concrete wash over the stadium photo — keeps the image readable
+   underneath without hiding it. */
+.st::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(
+      80% 50% at 50% 0%,
+      rgba(184, 255, 46, 0.09) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(13, 13, 15, 0.82) 0%,
+      rgba(13, 13, 15, 0.9) 45%,
+      rgba(13, 13, 15, 0.95) 100%
+    );
+}
+
+/* Concrete grain. */
+.st::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    repeating-linear-gradient(
+      37deg,
+      rgba(255, 255, 255, 0.025) 0 1px,
+      transparent 1px 3px
+    ),
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: auto, 3px 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Type
+   -------------------------------------------------------------------------- */
+
+/* Big graffiti piece — the repo's own Blacklisted face, with a spray halo. */
+.st-piece {
+  font-family: var(--font-graf);
+  line-height: 0.82;
+  color: var(--color-paper);
+  text-shadow:
+    0 0 24px rgba(184, 255, 46, 0.45),
+    4px 5px 0 rgba(0, 0, 0, 0.75);
+}
+
+/* Loud poster headline. */
+.st-shout {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 0.92;
+}
+
+/* Marker-pen annotation. */
+.st-tag {
+  font-family: var(--font-tag);
+  letter-spacing: 0.01em;
+  color: var(--color-spray-acid);
+  rotate: -1.6deg;
+}
+
+.st-stencil {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.85rem;
+  color: var(--color-spray-acid);
+}
+
+/* Hazard tape divider. */
+.st-tape {
+  height: 26px;
+  rotate: -0.7deg;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-spray-acid) 0 14px,
+    #0d0d0f 14px 28px
+  );
+  opacity: 0.9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   Paste-ups
+   -------------------------------------------------------------------------- */
+
+.st-paste {
+  position: relative;
+  background: rgba(23, 23, 26, 0.86);
+  border: 1px solid var(--edge);
+  /* Torn top and bottom edges. */
+  clip-path: polygon(
+    0 var(--tear), 6% 2px, 19% var(--tear), 31% 1px, 44% 8px, 58% 2px,
+    71% 9px, 85% 1px, 95% 7px, 100% 2px,
+    100% calc(100% - 6px), 88% 100%, 74% calc(100% - 8px),
+    61% calc(100% - 1px), 47% calc(100% - 9px), 33% calc(100% - 2px),
+    18% calc(100% - 8px), 7% calc(100% - 1px), 0 calc(100% - 7px)
+  );
+}
+
+/* Strip of tape across a corner. */
+.st-taped::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  width: 86px;
+  height: 24px;
+  rotate: -7deg;
+  background: rgba(244, 241, 234, 0.16);
+  border-left: 1px dashed rgba(244, 241, 234, 0.25);
+  border-right: 1px dashed rgba(244, 241, 234, 0.25);
+  z-index: 2;
+}
+
+/* --------------------------------------------------------------------------
+   Controls
+   -------------------------------------------------------------------------- */
+
+/* Marker-ruled field. */
+.st-ruled {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid rgba(244, 241, 234, 0.2);
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 2px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.st-ruled::placeholder {
+  color: rgba(244, 241, 234, 0.25);
+}
+
+.st-ruled:focus {
+  border-bottom-color: var(--color-spray-acid);
+}
+
+/* Huge sprayed numeral for the match count. */
+.st-count {
+  font-family: var(--font-graf);
+  font-size: clamp(4rem, 13vw, 6.5rem);
+  line-height: 0.9;
+  text-align: center;
+  color: var(--color-spray-acid);
+  text-shadow: 0 0 28px rgba(184, 255, 46, 0.5);
+  background: transparent;
+  border: 0;
+  outline: none;
+  width: 100%;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.st-count::-webkit-outer-spin-button,
+.st-count::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* Spray-cap difficulty toggles. */
+.st-cap {
+  --spray: var(--color-paper);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  padding: 9px 18px;
+  color: rgba(244, 241, 234, 0.55);
+  background: transparent;
+  border: 2px solid rgba(244, 241, 234, 0.2);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, rotate 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.st-cap:hover {
+  color: var(--color-paper);
+  border-color: rgba(244, 241, 234, 0.45);
+}
+
+.st-cap[aria-pressed="true"],
+.st-cap[aria-selected="true"] {
+  color: #0d0d0f;
+  background: var(--spray);
+  border-color: var(--spray);
+  rotate: -2deg;
+  box-shadow: 0 0 22px color-mix(in srgb, var(--spray) 55%, transparent);
+}
+
+/* Sprayed slab button. */
+.st-slab {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0d0d0f;
+  background: var(--color-spray-acid);
+  border: 0;
+  padding: 13px 26px;
+  cursor: pointer;
+  rotate: -0.8deg;
+  clip-path: polygon(2% 0, 100% 3%, 98% 100%, 0 96%);
+  transition: filter 0.18s ease, rotate 0.18s ease, box-shadow 0.18s ease;
+}
+
+.st-slab:hover:not(:disabled) {
+  filter: brightness(1.1);
+  rotate: 0.6deg;
+  box-shadow: 0 0 26px rgba(184, 255, 46, 0.45);
+}
+
+.st-slab:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  rotate: 0deg;
+}
+
+/* Random fill — cyan can, tilted the other way so the pair reads as two
+   separate stickers rather than a button group. */
+.st-slab--dice {
+  background: var(--color-spray-cyan);
+  rotate: 1deg;
+  clip-path: polygon(0 3%, 98% 0, 100% 97%, 2% 100%);
+}
+
+.st-slab--dice:hover:not(:disabled) {
+  rotate: -0.6deg;
+  box-shadow: 0 0 26px rgba(0, 229, 255, 0.5);
+}
+
+/* Marker scrub-out for clearing the card. */
+.st-wipe {
+  font-family: var(--font-tag);
+  font-size: 1.15rem;
+  color: rgba(244, 241, 234, 0.55);
+  background: transparent;
+  border: 0;
+  padding: 6px 4px;
+  cursor: pointer;
+  rotate: -1deg;
+  text-decoration: line-through
+    color-mix(in srgb, var(--color-spray-magenta) 0%, transparent);
+  transition: color 0.18s ease, text-decoration-color 0.25s ease;
+}
+
+.st-wipe:hover {
+  color: var(--color-spray-magenta);
+  text-decoration-color: var(--color-spray-magenta);
+}
+
+.st-slab--go {
+  width: 100%;
+  font-size: 2rem;
+  padding: 18px;
+  background: var(--color-spray-magenta);
+  color: var(--color-paper);
+  clip-path: polygon(1% 0, 100% 2%, 99% 100%, 0 97%);
+}
+
+.st-slab--go:hover:not(:disabled) {
+  box-shadow: 0 0 30px rgba(255, 46, 136, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   Fixture stickers
+   -------------------------------------------------------------------------- */
+
+.st-sticker {
+  --spray: var(--color-paper);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(35, 35, 39, 0.9);
+  border-left: 6px solid var(--spray);
+  padding: 9px 40px 9px 12px;
+  rotate: var(--tilt, 0deg);
+  animation: st-slap 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.3) backwards;
+}
+
+@keyframes st-slap {
+  from {
+    opacity: 0;
+    scale: 1.14;
+    rotate: -4deg;
+  }
+}
+
+.st-sticker__no {
+  font-family: var(--font-tag);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: rgba(244, 241, 234, 0.35);
+}
+
+.st-sticker__x {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  color: rgba(244, 241, 234, 0.45);
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.st-sticker__x:hover {
+  background: rgba(255, 46, 136, 0.28);
+  color: var(--color-paper);
+}
+
+/* --------------------------------------------------------------------------
+   Results
+   -------------------------------------------------------------------------- */
+
+.st-figure {
+  font-family: var(--font-graf);
+  font-size: clamp(2.6rem, 7vw, 3.8rem);
+  line-height: 0.9;
+  color: var(--color-spray-cyan);
+  text-shadow: 0 0 22px rgba(0, 229, 255, 0.4);
+  font-variant-numeric: tabular-nums;
+}
+
+.st-sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.st-sheet th,
+.st-sheet td {
+  border-bottom: 1px solid var(--edge);
+}
+
+.st-sheet thead th {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, 0.5);
+  padding: 8px 6px;
+  border-bottom: 3px solid var(--color-spray-acid);
+}
+
+.st-sheet tbody tr:hover {
+  background: rgba(184, 255, 46, 0.06);
+}
+
+.st-name {
+  position: sticky;
+  left: 0;
+  background: rgba(23, 23, 26, 0.96);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 7px 14px 7px 4px;
+  white-space: nowrap;
+}
+
+/* Spray blob = started. */
+.st-pip {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(244, 241, 234, 0.08);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.st-pip--on {
+  background: var(--color-spray-acid);
+  box-shadow: 0 0 14px rgba(184, 255, 46, 0.7);
+}
+
+.st-meter {
+  height: 14px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(244, 241, 234, 0.08) 0 3px,
+    transparent 3px 6px
+  );
+  flex: 1;
+}
+
+.st-meter__fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--color-spray-cyan),
+    var(--color-spray-acid)
+  );
+}
+
+.st-reveal {
+  animation: st-reveal 0.45s ease backwards;
+}
+
+@keyframes st-reveal {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-sticker,
+  .st-reveal {
+    animation: none;
+  }
+
+  .st-cap[aria-pressed="true"],
+  .st-cap[aria-selected="true"],
+  .st-slab,
+  .st-tag,
+  .st-tape {
+    rotate: none;
+  }
+}
