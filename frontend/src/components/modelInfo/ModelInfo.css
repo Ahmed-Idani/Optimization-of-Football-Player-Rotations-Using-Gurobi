@@ -1,118 +1,405 @@
-@keyframes typewriter {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
+/* "The maths behind it" panel — same street language as the planner, but
+   typeset for reading: formulae get room, prose gets a comfortable measure. */
 
-@keyframes blinkingCursor {
-  50% {
-    border-color: transparent;
-  }
-}
-
-/* Info banner */
-.info-banner {
+.mi-corner {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-  z-index: 10; /* Ensure it is on top */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  top: 18px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, rotate 0.2s ease, scale 0.2s ease;
+}
 
-  /* Display & center */
+/* Secondary: outlined, sits quietly top left. */
+.mi-corner--left {
+  left: 18px;
+  rotate: -1.4deg;
+  color: var(--color-paper, #f4f1ea);
+  background: rgba(13, 13, 15, 0.72);
+  border: 2px solid rgba(244, 241, 234, 0.32);
+}
+
+.mi-corner--left:hover {
+  color: var(--color-spray-cyan, #00e5ff);
+  border-color: var(--color-spray-cyan, #00e5ff);
+  rotate: 0.8deg;
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.35);
+}
+
+/* Primary: the maths is the interesting part, so it gets the loud treatment.
+   Filled acid, larger, angled, with a slow pulse to pull the eye. */
+.mi-corner--right {
+  right: 18px;
+  rotate: 1.4deg;
+  font-size: 1.28rem;
+  color: #0d0d0f;
+  background: var(--color-spray-acid, #b8ff2e);
+  border: 2px solid var(--color-spray-acid, #b8ff2e);
+  clip-path: polygon(2% 0, 100% 3%, 98% 100%, 0 96%);
+  box-shadow: 0 0 26px rgba(184, 255, 46, 0.45);
+  animation: mi-pulse 2.6s ease-in-out infinite;
+}
+
+.mi-corner--right:hover {
+  rotate: -0.8deg;
+  scale: 1.04;
+  box-shadow: 0 0 40px rgba(184, 255, 46, 0.75);
+  animation: none;
+}
+
+.mi-corner__sigma {
+  font-family: "Cambria Math", Georgia, serif;
+  font-size: 1.5em;
+  line-height: 0.7;
+  font-style: italic;
+}
+
+@keyframes mi-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(184, 255, 46, 0.35); }
+  50%      { box-shadow: 0 0 34px rgba(184, 255, 46, 0.7); }
+}
+
+@media (max-width: 640px) {
+  .mi-corner {
+    font-size: 0.92rem;
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .mi-corner--right { font-size: 1rem; }
+  .mi-corner--left { left: 10px; }
+  .mi-corner--right { right: 10px; }
+}
+
+.mi-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(5, 6, 8, 0.86);
+  animation: mi-fade 0.2s ease;
+}
+
+@keyframes mi-fade {
+  from { opacity: 0; }
+}
+
+.mi-panel {
+  position: relative;
+  width: min(880px, 100%);
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  background: #131417;
+  border: 1px solid rgba(244, 241, 234, 0.16);
+  outline: none;
+  animation: mi-rise 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.1);
 }
 
-.info-banner h2 {
-  margin-bottom: 10px;
+@keyframes mi-rise {
+  from { opacity: 0; translate: 0 18px; }
+}
+
+/* ---------- header ---------- */
+
+.mi-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 26px 18px;
+  border-bottom: 3px solid var(--color-spray-acid, #b8ff2e);
+}
+
+.mi-eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--font-data), sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-spray-acid, #b8ff2e);
+}
+
+.mi-title {
+  margin: 0;
+  font-family: var(--font-graf), cursive;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 0.85;
+  color: var(--color-paper, #f4f1ea);
+}
+
+.mi-close {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  font-size: 1.1rem;
+  color: rgba(244, 241, 234, 0.6);
+  background: transparent;
+  border: 1px solid rgba(244, 241, 234, 0.2);
+  cursor: pointer;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.mi-close:hover {
+  color: #fff;
+  background: rgba(255, 46, 136, 0.3);
+}
+
+/* ---------- body ---------- */
+
+.mi-body {
+  overflow-y: auto;
+  padding: 4px 26px 26px;
+  text-align: center;
+  font-family: var(--font-data), sans-serif;
+  color: rgba(244, 241, 234, 0.82);
+  font-size: 1.12rem;
+  line-height: 1.55;
+}
+
+.mi-body section {
+  padding-top: 26px;
+}
+
+.mi-body section + section {
+  border-top: 1px solid rgba(244, 241, 234, 0.1);
+}
+
+.mi-body h3 {
+  margin: 0 0 10px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-paper, #f4f1ea);
+}
+
+.mi-body h4 {
+  margin: 22px 0 8px;
+  font-family: var(--font-data), sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-spray-cyan, #00e5ff);
+}
+
+.mi-body p {
+  margin: 0 auto 12px;
+  max-width: 62ch;
+}
+
+.mi-body code {
+  font-size: 0.95em;
+  color: var(--color-spray-acid, #b8ff2e);
+}
+
+.mi-body em {
+  color: var(--color-paper, #f4f1ea);
+  font-style: italic;
+}
+
+/* ---------- headline statistics ---------- */
+
+.mi-stats {
+  margin: 16px auto 18px;
+  max-width: 62ch;
+  text-align: left;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.mi-stats li {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 16px;
+  align-items: baseline;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border-left: 3px solid var(--color-spray-cyan, #00e5ff);
+  font-size: 1.02rem;
+}
+
+.mi-stat {
+  font-family: var(--font-graf), cursive;
   font-size: 2rem;
+  line-height: 1;
+  color: var(--color-spray-cyan, #00e5ff);
+  text-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
 }
 
-.info-banner p {
-  font-size: 1rem;
-  margin-bottom: 20px;
+@media (max-width: 560px) {
+  .mi-stats li { grid-template-columns: 1fr; gap: 4px; }
 }
 
-/* Info text wrapper */
-.info-text {
-  display: inline-block;
-  width: 70%; /* adjust as needed */
-}
+/* ---------- maths ---------- */
 
-/* Typewriter effect */
-.typewriter {
-  display: inline-block;
-  overflow: hidden;
+.mi-math {
+  margin: 14px auto 16px;
+  max-width: 62ch;
+  padding: 16px 18px;
+  background: rgba(0, 0, 0, 0.42);
+  border-left: 3px solid var(--color-spray-acid, #b8ff2e);
+  font-family: "Cambria Math", Georgia, serif;
+  font-size: 1.32rem;
+  letter-spacing: 0.01em;
+  overflow-x: auto;
   white-space: nowrap;
-  border-right: 4px solid white;
-  width: 0; /* Start from zero */
-  /* Increase steps(120) or more if your text is long */
-  animation: typewriter 2s steps(120) forwards, blinkingCursor 0.7s step-end infinite alternate;
 }
 
-/* Info button */
-.info-button {
-  margin: 20px;
-  padding: 10px 20px;
+.mi-math--lead {
+  font-size: 1.5rem;
+}
+
+.mi-var {
+  font-style: italic;
+  color: var(--color-spray-acid, #b8ff2e);
+}
+
+.mi-math sub,
+.mi-math sup {
+  font-size: 0.68em;
+  font-style: italic;
+}
+
+/* symbol glossary */
+.mi-defs {
+  margin: 0 auto;
+  max-width: 46ch;
+  display: grid;
+  gap: 8px;
+  /* Two-column definitions stay left aligned inside the centred block;
+     centring the columns themselves would break the alignment. */
+  text-align: left;
+}
+
+.mi-defs > div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.mi-defs dt {
+  font-family: "Cambria Math", Georgia, serif;
+  font-size: 1.15rem;
+  color: var(--color-paper, #f4f1ea);
+}
+
+.mi-defs dd {
+  margin: 0;
   font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  color: rgba(244, 241, 234, 0.68);
 }
 
-.info-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
+.mi-note {
+  max-width: 62ch;
+  margin-inline: auto;
+  text-align: left;
+  padding: 12px 16px;
+  background: rgba(184, 255, 46, 0.08);
+  border-left: 3px solid var(--color-spray-acid, #b8ff2e);
+  font-size: 1.02rem;
 }
 
-/* Close info button */
-.close-info-button {
-  padding: 8px 16px;
+.mi-link {
+  color: var(--color-spray-acid, #b8ff2e);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(184, 255, 46, 0.45);
+  transition: border-color 0.18s ease, text-shadow 0.18s ease;
+}
+
+.mi-link:hover {
+  border-bottom-color: var(--color-spray-acid, #b8ff2e);
+  text-shadow: 0 0 14px rgba(184, 255, 46, 0.5);
+}
+
+.mi-todo {
+  margin: 14px auto 16px;
+  max-width: 62ch;
+  text-align: left;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.mi-todo li {
+  padding: 11px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid rgba(244, 241, 234, 0.25);
+  font-size: 1.02rem;
+}
+
+.mi-todo strong {
+  color: var(--color-spray-cyan, #00e5ff);
+}
+
+/* ---------- footer ---------- */
+
+.mi-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 26px;
+  border-top: 1px solid rgba(244, 241, 234, 0.14);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.mi-pdf {
+  padding: 12px 22px;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #0d0d0f;
+  background: var(--color-spray-acid, #b8ff2e);
+  clip-path: polygon(1% 0, 100% 2%, 99% 100%, 0 97%);
+  transition: filter 0.18s ease, box-shadow 0.18s ease;
+}
+
+.mi-pdf:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 24px rgba(184, 255, 46, 0.45);
+}
+
+.mi-view {
+  font-family: var(--font-data), sans-serif;
   font-size: 1rem;
-  color: #fff;
-  background-color: #dc3545;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  width: 100px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, 0.6);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(244, 241, 234, 0.3);
+  transition: color 0.18s ease, border-color 0.18s ease;
 }
 
-.close-info-button:hover {
-  background-color: #a71d2a;
-  transform: scale(1.05);
-}
-/* PDF Button */
-.pdf-button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  background-color: #28a745;  /* Green background */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none; /* Remove underline for links */
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.mi-view:hover {
+  color: var(--color-paper, #f4f1ea);
+  border-color: var(--color-paper, #f4f1ea);
 }
 
-.pdf-button:hover {
-  background-color: #218838;
-  transform: scale(1.05);
+@media (max-width: 560px) {
+  .mi-body { font-size: 1.02rem; padding-inline: 18px; }
+  .mi-head, .mi-foot { padding-inline: 18px; }
+  .mi-math { font-size: 1.1rem; }
+  .mi-defs > div { grid-template-columns: 1fr; gap: 2px; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .mi-backdrop, .mi-panel, .mi-corner--right { animation: none; }
+  .mi-corner, .mi-corner:hover { rotate: none; scale: none; }
+}
