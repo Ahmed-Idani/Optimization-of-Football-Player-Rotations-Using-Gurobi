@@ -1,0 +1,53 @@
+name: Deploy
+
+# The Render API redeploys itself on push (autoDeploy in render.yaml).
+# This workflow publishes the frontend bundle to Netlify's CDN.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  netlify:
+    name: Frontend to Netlify
+    runs-on: ubuntu-latest
+    # Never publish a broken bundle: CI must pass first.
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: frontend
+        env:
+          # Must match the API service on Render. Not a secret.
+          VITE_API_URL: https://rotation-api-s3m9.onrender.com
+        run: npm run build
+
+      - name: Publish to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ]; then
+            echo "NETLIFY_AUTH_TOKEN is not set."
+            echo "Add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          npx --yes netlify-cli@27 deploy \
+            --dir frontend/dist \
+            --site "$NETLIFY_SITE_ID" \
+            --prod \
+            --message "${GITHUB_SHA::7} via GitHub Actions"

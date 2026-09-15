@@ -1,0 +1,41 @@
+# Netlify hosts the interface on its CDN. The solver API stays on Render.
+
+[build]
+  base = "frontend"
+  command = "npm ci && npm run build"
+  publish = "frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Vite inlines this at build time. Not a secret: it is the public URL of the
+  # solver API on Render.
+  VITE_API_URL = "https://rotation-api-s3m9.onrender.com"
+
+# Single-page app: /teams/Arsenal is a route, not a file on disk. Without this
+# a deep link or a refresh returns 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Vite fingerprints everything in /assets, so it can be cached indefinitely.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/audio/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
