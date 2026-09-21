@@ -15,7 +15,6 @@ jobs:
   netlify:
     name: Frontend to Netlify
     runs-on: ubuntu-latest
-    # Never publish a broken bundle: CI must pass first.
     steps:
       - uses: actions/checkout@v5
 
@@ -28,6 +27,13 @@ jobs:
       - name: Install
         working-directory: frontend
         run: npm ci
+
+      # CI runs in parallel with this workflow, so it cannot gate the publish.
+      # Re-run the frontend checks here instead: a lint or build failure stops
+      # the job before anything reaches the CDN.
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
 
       - name: Build
         working-directory: frontend
