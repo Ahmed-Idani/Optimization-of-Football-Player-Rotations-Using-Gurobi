@@ -2,6 +2,14 @@
 
 # ⚽ Optimization of Football Player Rotations Using Gurobi
 
+**[Open the app](https://football-rotation-planner.netlify.app)** &nbsp;·&nbsp;
+[Solver API](https://rotation-api-s3m9.onrender.com/api/teams/) &nbsp;·&nbsp;
+[The model write-up (PDF)](https://football-rotation-planner.netlify.app/FootballRotationModel.pdf)
+
+The interface is served from Netlify's CDN; the solver runs on Render. The API
+is on a free instance, so the first request after an idle period takes a moment
+to wake.
+
 
 ## 📋 Table of Contents
 
